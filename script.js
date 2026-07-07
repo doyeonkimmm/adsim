@@ -56,15 +56,38 @@ const keywordRules = {
   interior: ["방", "인테리어", "조명", "침대", "수납", "책상"]
 };
 
+const concernRules = [
+  {
+    label: "불안",
+    words: ["불안", "걱정", "초조", "무서", "긴장", "떨려"],
+    reply: "그런 마음 들면 진짜 힘들지. 지금 바로 해결하지 않아도 괜찮아. 우선 뭐가 제일 걱정되는지 하나씩 말해줘."
+  },
+  {
+    label: "피로",
+    words: ["힘들", "피곤", "지쳤", "번아웃", "쉬고", "무기력"],
+    reply: "많이 지쳐 보인다. 계속 버티기만 하면 마음이 더 무거워질 수 있어. 오늘은 아주 작은 것 하나만 해도 충분해."
+  },
+  {
+    label: "관계",
+    words: ["친구", "관계", "싸웠", "서운", "외로", "혼자"],
+    reply: "관계 고민은 작은 말 하나도 크게 남아서 더 복잡하게 느껴질 수 있어. 있었던 일을 천천히 말해줘도 돼."
+  },
+  {
+    label: "진로",
+    words: ["진로", "미래", "성적", "대학", "꿈", "입시"],
+    reply: "미래가 막막하게 느껴질 때가 있지. 지금 답을 완벽히 정하지 않아도 돼. 어떤 선택지가 제일 마음에 걸리는지 같이 정리해보자."
+  }
+];
+
 const quickMessages = [
   "요즘 고양이랑 강아지 영상을 자주 봐",
   "시험 기간이라 공부 플래너가 필요해",
   "감성 플레이리스트 자주 들어",
   "디저트 카페 찾아보는 중이야",
-  "데일리 코디랑 가방에 관심 많아",
-  "여행 브이로그 보는 중이야",
-  "운동 루틴 다시 시작하려고 해",
-  "방 꾸미기랑 조명에 관심 있어"
+  "요즘 좀 불안하고 걱정이 많아",
+  "친구 관계 때문에 조금 서운해",
+  "진로가 막막해서 고민이야",
+  "그냥 너무 지친 느낌이 들어"
 ];
 
 const ads = {
@@ -285,7 +308,7 @@ function addMessage(role, text) {
 
 function renderMessages() {
   const initial = state.messages.length ? "" : `
-    <div class="bubble friend">안녕, 관심 있는 주제를 말해주면 가상의 광고 언어가 어떻게 바뀌는지 보여줄게.</div>
+    <div class="bubble friend">안녕. 관심 있는 것뿐 아니라 요즘 고민도 편하게 말해줘. 네 말 속 표현이 어떻게 해석되는지 같이 볼게.</div>
   `;
   chatWindow.innerHTML = initial + state.messages.map((message) => `
     <div class="bubble ${message.role}">${message.text}</div>
@@ -295,6 +318,14 @@ function renderMessages() {
 
 function analyzeMessage(text) {
   const detected = [];
+  const concerns = [];
+
+  concernRules.forEach((rule) => {
+    const foundWords = rule.words.filter((word) => text.includes(word));
+    if (foundWords.length) {
+      concerns.push({ ...rule, words: foundWords });
+    }
+  });
 
   Object.entries(keywordRules).forEach(([category, words]) => {
     const foundWords = words.filter((word) => text.includes(word));
@@ -306,8 +337,16 @@ function analyzeMessage(text) {
     }
   });
 
+  if (concerns.length) {
+    const concern = concerns[0];
+    const interestText = detected.length
+      ? ` 그리고 ${detected.map((item) => categories[item.category]).join(", ")} 쪽 관심 표현도 함께 보여.`
+      : "";
+    return `${concern.reply}${interestText}`;
+  }
+
   if (!detected.length) {
-    return "아직 뚜렷한 관심사를 찾기 어려워. 게시물을 눌러보거나 관심사를 더 말해줘.";
+    return "아직 뚜렷한 관심사나 고민 키워드는 잘 안 보여. 괜찮아, 그냥 지금 떠오르는 말을 더 편하게 적어줘.";
   }
 
   const labels = detected.map((item) => categories[item.category]).join(", ");
