@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AdMirror</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <main class="app-shell">
+    <header class="top-bar">
+      <div class="top-placeholder">언어와 매체 시뮬레이션</div>
+      <button class="ghost-button" id="resetBtn" type="button">기록 초기화</button>
+    </header>
+
+    <section class="tab-panel active" id="feedPanel" aria-labelledby="feedTab">
+      <div class="figma-feed-window">
+        <div class="figma-feed-titlebar">
+          <span>EXPLORE FEED</span>
+          <span class="window-dot" aria-hidden="true"></span>
+        </div>
+        <div class="figma-feed-body">
+          <div class="figma-feed-grid" id="feedGrid"></div>
+          <div class="figma-feed-scroll" id="feedScrollbar" aria-hidden="true">
+            <span class="scroll-arrow scroll-arrow-top">▲</span>
+            <span class="scroll-thumb" id="feedScrollThumb"></span>
+            <span class="scroll-arrow bottom">▼</span>
+          </div>
+        </div>
+        <p class="feed-status" id="feedStatus">관심 아이템을 골라보세요</p>
+      </div>
+    </section>
+
+    <section class="tab-panel" id="dmPanel" aria-labelledby="dmTab">
+      <div class="section-heading">
+        <div>
+          <h2>DM</h2>
+          <p>메시지 키워드로 관심사를 추정해요.</p>
+        </div>
+      </div>
+
+      <div class="quick-actions" id="quickActions"></div>
+      <div class="chat-window" id="chatWindow" aria-live="polite"></div>
+      <form class="dm-compose" id="dmForm">
+        <input id="dmInput" type="text" placeholder="관심사를 문장으로 말해보세요" autocomplete="off">
+        <button type="submit">전송</button>
+      </form>
+    </section>
+
+    <section class="tab-panel" id="adPanel" aria-labelledby="adTab">
+      <div class="ad-control">
+        <div>
+          <p class="eyebrow">광고 화면</p>
+          <h2>개인화 광고 ON/OFF</h2>
+        </div>
+        <label class="switch">
+          <input id="personalToggle" type="checkbox" checked>
+          <span></span>
+        </label>
+      </div>
+
+      <div id="adContent"></div>
+    </section>
+  </main>
+
+  <nav class="bottom-nav" aria-label="주요 화면">
+    <button class="nav-item active" id="feedTab" data-target="feedPanel" type="button">
+      <span class="nav-icon">▦</span>
+      <span>탐색</span>
+    </button>
+    <button class="nav-item" id="dmTab" data-target="dmPanel" type="button">
+      <span class="nav-icon">✉</span>
+      <span>DM</span>
+    </button>
+    <button class="nav-item" id="adTab" data-target="adPanel" type="button">
+      <span class="nav-icon">◈</span>
+      <span>광고</span>
+    </button>
+  </nav>
+
+  <div class="modal-backdrop" id="postModal" aria-hidden="true">
+    <article class="post-modal" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+      <button class="modal-close" id="modalClose" type="button" aria-label="닫기">×</button>
+      <div class="modal-image" id="modalImage"></div>
+      <div class="modal-body">
+        <span class="category-pill" id="modalCategory"></span>
+        <h2 id="modalTitle"></h2>
+        <p id="modalCaption"></p>
+        <p class="activity-note">이 활동이 광고 화면에 반영되었습니다.</p>
+        <div class="modal-actions">
+          <button id="likeBtn" type="button">좋아요</button>
+          <button id="saveBtn" type="button">저장</button>
+          <button id="hideBtn" type="button">관심 없음</button>
+        </div>
+      </div>
+    </article>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
